@@ -1,3 +1,5 @@
+#!/bin/bash
+
 #Parse command-line options
 PARAMS=$(getopt -o h,d: --long help,winmanager:,display: -n "testWindow.sh" -- "$@")
 
