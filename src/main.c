@@ -1,48 +1,44 @@
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
+#include "app/app.h"
 #include <stdio.h>
 #include <stdlib.h>
 
 
 int main(){
-    Display *display = XOpenDisplay( NULL );
-    if( !display ){
-        printf("Could not create display."); 
-        return 1; 
-    }
+    App app;
 
-    int screenId = DefaultScreen(display);
-
-    // Get black and white color (see this as two tones color space, independently of the real colors)
-    unsigned long white = WhitePixel(display,screenId);
-    unsigned long black = BlackPixel(display,screenId);
+    init(&app);
 
     // Create window
-    Window window = XCreateSimpleWindow(display, DefaultRootWindow(display), 50, 50, 200, 200, 0, black, white);
+    Window window = XCreateSimpleWindow(display, DefaultRootWindow(display), 50, 50, 200, 200, 2, white, black);
 
-    // Add window
+    XSelectInput(display, window, ExposureMask | StructureNotifyMask);
+
     XMapWindow(display, window);
 
-    // Create empty mask
-    long eventMask = StructureNotifyMask;
-
-    // Select input to check (in that case, if the window was succesfully added to the display)
-    XSelectInput(display, window, eventMask);
-
     XEvent event;
-    do{
-        XNextEvent(display, &event);   // Wait for event, /!\ calls XFlush
-    }while(event.type != MapNotify); // Check each event until we hit MapNotify (the one we're looking for)
+    GC gc = XCreateGC(display, window, 0, NULL);
 
-    // Create graphic context (for drawing)
-    GC graphicContext = XCreateGC(display, window, 0, NULL);   
+    while (1) {
+        XNextEvent(display, &event);
 
-    XSetForeground(display, graphicContext, black);
+        switch (event.type) {
 
-    XDrawLine(display, window, graphicContext, 10,10, 190,190); //from-to
-    XDrawLine(display, window, graphicContext, 10,190, 190,10); //from-to
+            case MapNotify:
+                printf("Mapped\n");
+                break;
 
-    while(1);
+            case Expose:
+                {
+                    XSetForeground(display, gc, white);
+
+                    XDrawLine(display, window, gc, 10,10, 190,190);
+                    XDrawLine(display, window, gc, 10,190, 190,10);
+
+                    XFlush(display);
+                }
+                break;
+        }
+    }
 
     return 0;
 }
