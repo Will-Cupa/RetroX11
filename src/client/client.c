@@ -1,19 +1,22 @@
 #include "client.h"
 
-void createWindow(Client *client, App *app){
+Client createClient(Display *display, Window *window, long white, long black){
+    Client *client;
 
-    client->window = XCreateSimpleWindow(app->display, DefaultRootWindow(app->display), client->x, client->y, client->width, client->height, 2, app->white, app->black);
-    
-    XSelectInput(app->display, client->window, ExposureMask | StructureNotifyMask);
+    client->window = XCreateSimpleWindow(display, DefaultRootWindow(display), client->x, client->y, client->width, client->height, 2, white, black);
 
-    XMapWindow(app->display, client->window);
+    XSelectInput(display, client->window, ExposureMask | StructureNotifyMask);
 
-    client->graphicContext = XCreateGC(app->display, client->window, 0, NULL);
+    XMapWindow(display, client->window);
+
+    client->graphicContext = XCreateGC(display, client->window, 0, NULL);
+
+    return *client;
 }
 
-void drawWindow(Client *client, App *app){
-    XSetForeground(app->display, client->graphicContext, app->white);
+void drawWindow(Client *client, Display *display, long white, long black){
+    XSetForeground(display, client->graphicContext, white);
 
-    XDrawLine(app->display, client->window, client->graphicContext, 10,10, 190,190);
-    XDrawLine(app->display, client->window, client->graphicContext, 10,190, 190,10);
+    XDrawLine(display, client->window, client->graphicContext, 10,10, 190,190);
+    XDrawLine(display, client->window, client->graphicContext, 10,190, 190,10);
 }

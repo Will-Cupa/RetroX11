@@ -2,7 +2,7 @@
 
 
 void init(App *app) {
-    app->display = XOpenDisplay( NULL );
+    app->display = XOpenDisplay(NULL);
 
     if( !app->display){
         printf("Could not create display."); 
@@ -31,14 +31,60 @@ void run(App *app) {
 void handle_event(App *app, XEvent *event) {
     switch (event->type) {
         case Expose:
+            Client *client = app->client_chain;
+
+            while(client){
+                client = client->next;
+                drawWindow(client, app->display, app->white, app->black);
+            }
+
             XFlush(app->display);
             break;
 
         case MapRequest:
+            handle_map_request(app, &event->xmaprequest);
             // for WM later
+            break;
+        
+        case ConfigureRequest:
+            configureRequest(app->display, &event->xconfigurerequest);
             break;
 
         case DestroyNotify:
             break;
     }
 }
+
+
+void configureRequest(Display *display, XConfigureRequestEvent *ev){
+    XWindowChanges changes;
+
+    changes.x = ev->x;
+    changes.y = ev->y;
+    changes.width = ev->width;
+    changes.height = ev->height;
+    changes.border_width = ev->border_width;
+    changes.sibling = ev->above;
+    changes.stack_mode = ev->detail;
+
+    XConfigureWindow(display, ev->window, ev->value_mask, &changes);
+}
+
+
+void handle_map_request(App *app, XMapRequestEvent *e) {
+
+    // Add window to your internal client list
+    Client client = createClient(app->display, &e->window, app->white, app->black);
+
+    // Insert client at the start of the chain
+    if(!app->client_chain){
+        app->client_chain = &client;
+    } else {
+        client.next =  app->client_chain;
+        app->client_chain->next = &client;
+    }
+
+    // // You decide size/position
+    // XMoveResizeWindow(app->display, e->window, 100, 100, 800, 600);
+}
+

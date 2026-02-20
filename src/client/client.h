@@ -3,17 +3,17 @@
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-#include "../app/app.h"
 
-typedef struct {
+typedef struct Client {
     Window window;
     GC graphicContext;
     int x, y;
     int width, height;
+    struct Client *next;
 } Client;
 
-void createWindow(Client *client, App *app);
+Client createClient(Display *display, Window *window, long white, long black);
 
-void drawWindow(Client *client, App *app);
+void drawWindow(Client *client, Display *display, long white, long black);
 
 #endif /* CLIENT_H */

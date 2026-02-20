@@ -1,15 +1,11 @@
-#include "client/client.h" // This include every other files needed
+#include "app/app.h" // This include every other files needed
 
 int main(){
-    App app;
+    App *app;
 
-    init(&app);
-
-    Client client = { NULL, NULL, 10, 10, 300, 200};
-    // Create window
-    createWindow(&client, &app);
+    init(app);
     
-    run(&app);
+    run(app);
 
     return 0;
 }
