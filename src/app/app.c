@@ -14,6 +14,8 @@ void init(App *app) {
     // Get black and white color (see this as two tones color space, independently of the real colors)
     app->white = WhitePixel(app->display, app->screenId);
     app->black = BlackPixel(app->display, app->screenId);
+
+    XSelectInput(app->display, DefaultRootWindow(app->display), SubstructureRedirectMask | SubstructureNotifyMask);
 }
 
 
