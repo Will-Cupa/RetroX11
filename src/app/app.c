@@ -16,13 +16,17 @@ void init(App *app) {
     app->black = BlackPixel(app->display, app->screenId);
 
     XSelectInput(app->display, DefaultRootWindow(app->display), SubstructureRedirectMask | SubstructureNotifyMask);
+    XSync(app->display, False); //Flush errors
 }
 
 
 void run(App *app) {
     XEvent event;
     while (1) {
+        printf("loop\n");
+
         XNextEvent(app->display, &event);
+        printf("events\n");
         handle_event(app, &event);
     }
 }
@@ -42,11 +46,14 @@ void handle_event(App *app, XEvent *event) {
             break;
 
         case MapRequest:
+            printf("requested\n");
+            fflush(stdout);
             handle_map_request(app, &event->xmaprequest);
             // for WM later
             break;
         
         case ConfigureRequest:
+            printf("configure request\n");
             configureRequest(app->display, &event->xconfigurerequest);
             break;
 
@@ -77,12 +84,12 @@ void handle_map_request(App *app, XMapRequestEvent *e) {
     Client client = createClient(app->display, &e->window, app->white, app->black);
 
     // Insert client at the start of the chain
-    if(!app->client_chain){
-        app->client_chain = &client;
-    } else {
-        client.next =  app->client_chain;
-        app->client_chain->next = &client;
-    }
+    // if(!app->client_chain){
+    //     app->client_chain = &client;
+    // } else {
+    //     client.next =  app->client_chain;
+    //     app->client_chain->next = &client;
+    // }
 
     // // You decide size/position
     // XMoveResizeWindow(app->display, e->window, 100, 100, 800, 600);

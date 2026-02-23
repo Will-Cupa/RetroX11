@@ -1,17 +1,26 @@
 #include "client.h"
 
 Client createClient(Display *display, Window *window, long white, long black){
-    Client *client;
+    Client client = {
+        NULL,
+        NULL,
+        0, 0,
+        200, 100,
+        malloc(sizeof(Client))
+    };
 
-    client->window = XCreateSimpleWindow(display, DefaultRootWindow(display), client->x, client->y, client->width, client->height, 2, white, black);
+    printf("display ptr: %p\n", display);
+    fflush(stdout);
 
-    XSelectInput(display, client->window, ExposureMask | StructureNotifyMask);
+    client.window = XCreateSimpleWindow(display, DefaultRootWindow(display), client.x, client.y, client.width, client.height, 2, white, black);
 
-    XMapWindow(display, client->window);
+    XSelectInput(display, client.window, ExposureMask | StructureNotifyMask);
 
-    client->graphicContext = XCreateGC(display, client->window, 0, NULL);
+    XMapWindow(display, client.window);
 
-    return *client;
+    client.graphicContext = XCreateGC(display, client.window, 0, NULL);
+
+    return client;
 }
 
 void drawWindow(Client *client, Display *display, long white, long black){

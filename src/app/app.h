@@ -1,10 +1,6 @@
 #ifndef APP_H
 #define APP_H
 
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include "../client/client.h"
 
 typedef struct App {
