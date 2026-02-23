@@ -15,7 +15,7 @@ Client* createClient(Display *display, Window *window, long white, long black){
 
     printf("display ptr: %p\n", display);
 
-    client->window = XCreateSimpleWindow(display, DefaultRootWindow(display), client->x, client->y, client->width, client->height, 2, white, black);
+    client->window = *window;
 
     XSelectInput(display, client->window, ExposureMask | StructureNotifyMask);
 

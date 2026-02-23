@@ -15,6 +15,8 @@ void run(App *app);
 
 void init(App *app);
 
+void draw(App *app);
+
 void handle_event(App *app, XEvent *event);
 
 void handle_map_request(App *app, XMapRequestEvent *e);

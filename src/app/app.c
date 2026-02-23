@@ -1,5 +1,5 @@
 #include "app.h"
-
+#include <X11/cursorfont.h>
 
 void init(App *app) {
     app->display = XOpenDisplay(NULL);
@@ -14,6 +14,9 @@ void init(App *app) {
     // Get black and white color (see this as two tones color space, independently of the real colors)
     app->white = WhitePixel(app->display, app->screenId);
     app->black = BlackPixel(app->display, app->screenId);
+
+    Cursor cursor = XCreateFontCursor(app->display, XC_left_ptr);
+    XDefineCursor(app->display, DefaultRootWindow(app->display), cursor);
 
     XSelectInput(app->display, DefaultRootWindow(app->display), SubstructureRedirectMask | SubstructureNotifyMask);
     XSync(app->display, False); //Flush errors
@@ -36,18 +39,7 @@ void handle_event(App *app, XEvent *event) {
     switch (event->type) {
         case Expose:
             printf("Exposed\n");
-            Client *client = app->client_chain;
-
-            printf("head: %p\n", (void*)app->client_chain);
-            fflush(stdout);
-
-            while(client){
-                printf("drawing\n");
-                drawWindow(client, app->display, app->white, app->black);
-                client = client->next;
-            }
-
-            XFlush(app->display);
+            draw(app);
             break;
 
         case MapRequest:
@@ -64,6 +56,21 @@ void handle_event(App *app, XEvent *event) {
         case DestroyNotify:
             break;
     }
+}
+
+
+void draw(App *app){
+    Client *client = app->client_chain;
+
+    printf("head: %p\n", (void*)app->client_chain);
+
+    while(client){
+        printf("drawing\n");
+        drawWindow(client, app->display, app->white, app->black);
+        client = client->next;
+    }
+
+    XFlush(app->display);
 }
 
 
@@ -96,8 +103,6 @@ void handle_map_request(App *app, XMapRequestEvent *e) {
     
     app->client_chain = client;
 
-
-    // // You decide size/position
-    // XMoveResizeWindow(app->display, e->window, 100, 100, 800, 600);
+    XMoveResizeWindow(app->display, e->window, 100, 100, 800, 600);
 }
 
