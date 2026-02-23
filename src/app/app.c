@@ -81,7 +81,7 @@ void configureRequest(Display *display, XConfigureRequestEvent *ev){
 void handle_map_request(App *app, XMapRequestEvent *e) {
 
     // Add window to your internal client list
-    Client client = createClient(app->display, &e->window, app->white, app->black);
+    Client *client = createClient(app->display, &e->window, app->white, app->black);
 
     // Insert client at the start of the chain
     // if(!app->client_chain){

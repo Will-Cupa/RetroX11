@@ -1,6 +1,6 @@
 #include "client.h"
 
-Client createClient(Display *display, Window *window, long white, long black){
+Client* createClient(Display *display, Window *window, long white, long black){
     Client client = {
         NULL,
         NULL,
@@ -20,7 +20,7 @@ Client createClient(Display *display, Window *window, long white, long black){
 
     client.graphicContext = XCreateGC(display, client.window, 0, NULL);
 
-    return client;
+    return &client;
 }
 
 void drawWindow(Client *client, Display *display, long white, long black){

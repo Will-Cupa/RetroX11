@@ -15,7 +15,7 @@ typedef struct Client {
     struct Client *next;
 } Client;
 
-Client createClient(Display *display, Window *window, long white, long black);
+Client* createClient(Display *display, Window *window, long white, long black);
 
 void drawWindow(Client *client, Display *display, long white, long black);
 
