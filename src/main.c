@@ -2,7 +2,7 @@
 
 int main(){
     App *app = malloc(sizeof(App));
-
+    
     init(app);
     printf("Connected to display: %s\n", DisplayString(app->display));
 

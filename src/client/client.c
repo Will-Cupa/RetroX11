@@ -17,7 +17,7 @@ Client* createClient(Display *display, Window *window, long white, long black){
 
     client->window = *window;
 
-    XSelectInput(display, client->window, ExposureMask | StructureNotifyMask);
+    XSelectInput(display, client->window, ExposureMask | StructureNotifyMask | ButtonPressMask | ButtonReleaseMask | PointerMotionMask);
 
     XMapWindow(display, client->window);
 
