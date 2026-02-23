@@ -35,11 +35,16 @@ void run(App *app) {
 void handle_event(App *app, XEvent *event) {
     switch (event->type) {
         case Expose:
+            printf("Exposed\n");
             Client *client = app->client_chain;
 
+            printf("head: %p\n", (void*)app->client_chain);
+            fflush(stdout);
+
             while(client){
-                client = client->next;
+                printf("drawing\n");
                 drawWindow(client, app->display, app->white, app->black);
+                client = client->next;
             }
 
             XFlush(app->display);
@@ -47,7 +52,6 @@ void handle_event(App *app, XEvent *event) {
 
         case MapRequest:
             printf("requested\n");
-            fflush(stdout);
             handle_map_request(app, &event->xmaprequest);
             // for WM later
             break;
@@ -84,12 +88,14 @@ void handle_map_request(App *app, XMapRequestEvent *e) {
     Client *client = createClient(app->display, &e->window, app->white, app->black);
 
     // Insert client at the start of the chain
-    if(!app->client_chain){
-        app->client_chain = client;
-    } else {
-        client->next =  app->client_chain;
-        app->client_chain->next = client;
+
+    if(app->client_chain){
+        printf("add to chain\n");
+        client->next = app->client_chain;
     }
+    
+    app->client_chain = client;
+
 
     // // You decide size/position
     // XMoveResizeWindow(app->display, e->window, 100, 100, 800, 600);

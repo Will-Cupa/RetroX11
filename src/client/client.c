@@ -1,7 +1,9 @@
 #include "client.h"
 
 Client* createClient(Display *display, Window *window, long white, long black){
-    Client client = {
+    Client *client = malloc(sizeof(Client)); 
+
+    Client temp = {
         NULL,
         NULL,
         0, 0,
@@ -9,18 +11,19 @@ Client* createClient(Display *display, Window *window, long white, long black){
         malloc(sizeof(Client))
     };
 
+    *client = temp;
+
     printf("display ptr: %p\n", display);
-    fflush(stdout);
 
-    client.window = XCreateSimpleWindow(display, DefaultRootWindow(display), client.x, client.y, client.width, client.height, 2, white, black);
+    client->window = XCreateSimpleWindow(display, DefaultRootWindow(display), client->x, client->y, client->width, client->height, 2, white, black);
 
-    XSelectInput(display, client.window, ExposureMask | StructureNotifyMask);
+    XSelectInput(display, client->window, ExposureMask | StructureNotifyMask);
 
-    XMapWindow(display, client.window);
+    XMapWindow(display, client->window);
 
-    client.graphicContext = XCreateGC(display, client.window, 0, NULL);
+    client->graphicContext = XCreateGC(display, client->window, 0, NULL);
 
-    return &client;
+    return client;
 }
 
 void drawWindow(Client *client, Display *display, long white, long black){
