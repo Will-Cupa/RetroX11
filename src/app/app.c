@@ -84,12 +84,12 @@ void handle_map_request(App *app, XMapRequestEvent *e) {
     Client *client = createClient(app->display, &e->window, app->white, app->black);
 
     // Insert client at the start of the chain
-    // if(!app->client_chain){
-    //     app->client_chain = &client;
-    // } else {
-    //     client.next =  app->client_chain;
-    //     app->client_chain->next = &client;
-    // }
+    if(!app->client_chain){
+        app->client_chain = client;
+    } else {
+        client->next =  app->client_chain;
+        app->client_chain->next = client;
+    }
 
     // // You decide size/position
     // XMoveResizeWindow(app->display, e->window, 100, 100, 800, 600);

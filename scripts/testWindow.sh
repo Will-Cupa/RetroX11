@@ -46,5 +46,7 @@ do
     esac
 done
 
+gcc src/main.c src/*/* -o bin/main -lX11
+
 Xephyr :"$DISPLAY_NUM" -screen 1280x720 -ac &
-DISPLAY=:"$DISPLAY_NUM" "$WIN_MANAGER"
+DISPLAY=:"$DISPLAY_NUM" bin/main
