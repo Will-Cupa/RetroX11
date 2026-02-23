@@ -8,7 +8,7 @@ Client* createClient(Display *display, Window *window, long white, long black){
         NULL,
         0, 0,
         200, 100,
-        malloc(sizeof(Client))
+        NULL
     };
 
     *client = temp;
