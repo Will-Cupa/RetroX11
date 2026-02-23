@@ -48,5 +48,9 @@ done
 
 gcc src/main.c src/*/* -o bin/main -lX11
 
-Xephyr :"$DISPLAY_NUM" -screen 1280x720 -ac &
+Xephyr :"$DISPLAY_NUM" -screen 1280x720 -ac -softCursor &
 DISPLAY=:"$DISPLAY_NUM" bin/main
+
+# DISPLAY=:2 xfdesktop &
+# DISPLAY=:2 xfce4-panel &
+# DISPLAY=:2 xfsettingsd &
