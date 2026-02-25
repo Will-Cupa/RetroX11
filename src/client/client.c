@@ -11,13 +11,16 @@ Client* createClient(Display *display, Window *contentWindow, long white, long b
         NULL
     };
 
+    XWindowAttributes attr;
+    XGetWindowAttributes(display, *contentWindow, &attr); 
+
     *client = temp;
 
     printf("display ptr: %p\n", display);
 
-    client->window = XCreateSimpleWindow(display, DefaultRootWindow(display), client->x, client->y, client->width, client->height, 2, white, black);
+    client->window = XCreateSimpleWindow(display, DefaultRootWindow(display), attr.x-10, attr.y-10, attr.width+20, attr.height+20, 2, white, black);
 
-    XReparentWindow(display, *contentWindow, client->window, client->x, client->y);
+    XReparentWindow(display, *contentWindow, client->window, attr.x, attr.y);
 
     XSelectInput(display, client->window, ExposureMask | StructureNotifyMask | ButtonPressMask | ButtonReleaseMask | PointerMotionMask);
 

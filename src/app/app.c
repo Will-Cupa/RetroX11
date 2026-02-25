@@ -103,6 +103,6 @@ void handle_map_request(App *app, XMapRequestEvent *e) {
     
     app->client_chain = client;
 
-    // XMoveResizeWindow(app->display, e->window, 100, 100, 800, 600);
+    XMoveResizeWindow(app->display, e->window, 100, 100, 800, 600);
 }
 
