@@ -6,6 +6,7 @@ Client* createClient(Display *display, Window *contentWindow, long white, long b
     Client temp = {
         NULL,
         NULL,
+        NULL,
         0, 0,
         200, 100,
         NULL
@@ -18,18 +19,24 @@ Client* createClient(Display *display, Window *contentWindow, long white, long b
 
     printf("display ptr: %p\n", display);
 
-    client->window = XCreateSimpleWindow(display, DefaultRootWindow(display), attr.x-10, attr.y-10, attr.width+20, attr.height+20, 2, white, black);
+    client->frame = XCreateSimpleWindow(display, DefaultRootWindow(display), attr.x, attr.y, attr.width+BORDER_WIDTH*2, attr.height+BORDER_WIDTH*2, FRAME_BORDER_WIDTH, white, black);
+    client->content = *contentWindow;
 
-    XReparentWindow(display, *contentWindow, client->window, attr.x, attr.y);
+    XReparentWindow(display, client->content, client->frame, BORDER_WIDTH, BORDER_WIDTH);
 
-    XSelectInput(display, client->window, ExposureMask | StructureNotifyMask | ButtonPressMask | ButtonReleaseMask | PointerMotionMask);
+    XSelectInput(display, client->frame, ExposureMask | StructureNotifyMask | ButtonPressMask | ButtonReleaseMask | PointerMotionMask);
 
-    XMapWindow(display, client->window);
-    XMapWindow(display, *contentWindow);
+    XMapWindow(display, client->frame);
+    XMapWindow(display, client->content);
 
-    client->graphicContext = XCreateGC(display, client->window, 0, NULL);
+    client->graphicContext = XCreateGC(display, client->frame, 0, NULL);
 
     return client;
+}
+
+void moveResizeWindow(Display *display, Client *client, int x, int y, int w, int h){
+    XMoveResizeWindow(display, client->frame, x, y, w, h);
+    XMoveResizeWindow(display, client->content, BORDER_WIDTH, BORDER_WIDTH, w-BORDER_WIDTH*2, h-BORDER_WIDTH*2);
 }
 
 void drawWindow(Client *client, Display *display, long white, long black){  
@@ -38,12 +45,6 @@ void drawWindow(Client *client, Display *display, long white, long black){
 
     XSetForeground(display, client->graphicContext, white);
 
-    XDrawLine(display, client->window, client->graphicContext, 10,10, 190,190);
-    XDrawLine(display, client->window, client->graphicContext, 10,190, 190,10);
-
-//     XQueryTree(display, client->window, NULL, NULL, childWindowList, nbChildren);
-
-//     for(int i=0; i < nbChildren; i++){
-//         childWindowList[i]->drawWindow();
-//     }
+    XDrawLine(display, client->frame, client->graphicContext, 10,10, 190,190);
+    XDrawLine(display, client->frame, client->graphicContext, 10,190, 190,10);
 }

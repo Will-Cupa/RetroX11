@@ -7,8 +7,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+#include "../design.h"
+
 typedef struct Client {
-    Window window;
+    Window frame;
+    Window content;
     GC graphicContext;
     int x, y;
     int width, height;
@@ -16,6 +19,8 @@ typedef struct Client {
 } Client;
 
 Client* createClient(Display *display, Window *window, long white, long black);
+
+void moveResizeWindow(Display *display, Client *client, int x, int y, int w, int h);
 
 void drawWindow(Client *client, Display *display, long white, long black);
 
